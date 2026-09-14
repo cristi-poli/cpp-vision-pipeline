@@ -1,9 +1,13 @@
 #include <opencv2/opencv.hpp>
+
+#include <atomic>
 #include <chrono>
 #include <iostream>
 #include <string>
+#include <thread>
 
 #include "FrameProcessor.hpp"
+#include "ThreadSafeQueue.hpp"
 
 int main(int argc, char* argv[])
 {
@@ -24,17 +28,35 @@ int main(int argc, char* argv[])
     }
 
     FrameProcessor processor;
-    cv::Mat frame;
 
-    while (true)
+    ThreadSafeQueue<cv::Mat> frameQueue(5);
+
+    std::atomic<bool> stopRequested(false);
+
+    std::thread readerThread([&]()
     {
-        video >> frame;
+        cv::Mat frame;
 
-        if (frame.empty())
+        while (!stopRequested)
         {
-            break;
+            if (!video.read(frame))
+            {
+                break;
+            }
+
+            if (!frameQueue.push(frame.clone()))
+            {
+                break;
+            }
         }
 
+        frameQueue.close();
+    });
+
+    cv::Mat frame;
+
+    while (frameQueue.waitAndPop(frame))
+    {
         auto start = std::chrono::steady_clock::now();
 
         cv::Mat processedFrame = processor.process(frame);
@@ -89,8 +111,18 @@ int main(int argc, char* argv[])
 
         if (key == 'q')
         {
+            stopRequested = true;
+            frameQueue.close();
             break;
         }
+    }
+
+    stopRequested = true;
+    frameQueue.close();
+
+    if (readerThread.joinable())
+    {
+        readerThread.join();
     }
 
     video.release();
