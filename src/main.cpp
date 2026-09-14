@@ -2,6 +2,8 @@
 #include <iostream>
 #include <string>
 
+#include "FrameProcessor.hpp"
+
 int main(int argc, char* argv[])
 {
     if (argc < 2)
@@ -20,10 +22,9 @@ int main(int argc, char* argv[])
         return 1;
     }
 
+    FrameProcessor processor;
+
     cv::Mat frame;
-    cv::Mat gray;
-    cv::Mat blurred;
-    cv::Mat edges;
 
     while (true)
     {
@@ -34,21 +35,7 @@ int main(int argc, char* argv[])
             break;
         }
 
-        cv::cvtColor(frame, gray, cv::COLOR_BGR2GRAY);
-
-        cv::GaussianBlur(
-            gray,
-            blurred,
-            cv::Size(5, 5),
-            0
-        );
-
-        cv::Canny(
-            blurred,
-            edges,
-            50,
-            150
-        );
+        cv::Mat edges = processor.process(frame);
 
         cv::imshow("Original", frame);
         cv::imshow("Edge Detection", edges);
