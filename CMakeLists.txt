@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(OpenCV REQUIRED)
+find_package(Threads REQUIRED)
 
 add_executable(
     vision_app
@@ -22,5 +23,7 @@ target_include_directories(
 
 target_link_libraries(
     vision_app
+    PRIVATE
     ${OpenCV_LIBS}
+    Threads::Threads
 )
