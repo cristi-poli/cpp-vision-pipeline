@@ -1,4 +1,5 @@
 #include <opencv2/opencv.hpp>
+#include <chrono>
 #include <iostream>
 #include <string>
 
@@ -23,7 +24,6 @@ int main(int argc, char* argv[])
     }
 
     FrameProcessor processor;
-
     cv::Mat frame;
 
     while (true)
@@ -35,7 +35,52 @@ int main(int argc, char* argv[])
             break;
         }
 
+        auto start = std::chrono::steady_clock::now();
+
         cv::Mat processedFrame = processor.process(frame);
+
+        auto end = std::chrono::steady_clock::now();
+
+        double processingTime =
+            std::chrono::duration<double, std::milli>(
+                end - start
+            ).count();
+
+        double fps = 0.0;
+
+        if (processingTime > 0.0)
+        {
+            fps = 1000.0 / processingTime;
+        }
+
+        std::string timeText =
+            "Processing: " +
+            std::to_string(processingTime).substr(0, 5) +
+            " ms";
+
+        std::string fpsText =
+            "FPS: " +
+            std::to_string(fps).substr(0, 5);
+
+        cv::putText(
+            processedFrame,
+            timeText,
+            cv::Point(20, 30),
+            cv::FONT_HERSHEY_SIMPLEX,
+            0.7,
+            cv::Scalar(0, 255, 0),
+            2
+        );
+
+        cv::putText(
+            processedFrame,
+            fpsText,
+            cv::Point(20, 60),
+            cv::FONT_HERSHEY_SIMPLEX,
+            0.7,
+            cv::Scalar(0, 255, 0),
+            2
+        );
 
         cv::imshow("Original", frame);
         cv::imshow("Contour Detection", processedFrame);
