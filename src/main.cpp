@@ -35,10 +35,10 @@ int main(int argc, char* argv[])
             break;
         }
 
-        cv::Mat edges = processor.process(frame);
+        cv::Mat processedFrame = processor.process(frame);
 
         cv::imshow("Original", frame);
-        cv::imshow("Edge Detection", edges);
+        cv::imshow("Contour Detection", processedFrame);
 
         char key = static_cast<char>(cv::waitKey(30));
 
