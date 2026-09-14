@@ -10,6 +10,7 @@ public:
 
 private:
     cv::Mat detectEdges(const cv::Mat& frame);
+    void detectContours(cv::Mat& frame, const cv::Mat& edges);
 };
 
 #endif
