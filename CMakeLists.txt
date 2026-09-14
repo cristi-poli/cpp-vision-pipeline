@@ -10,11 +10,13 @@ find_package(OpenCV REQUIRED)
 add_executable(
     vision_app
     src/main.cpp
+    src/FrameProcessor.cpp
 )
 
 target_include_directories(
     vision_app
     PRIVATE
+    include
     ${OpenCV_INCLUDE_DIRS}
 )
 
