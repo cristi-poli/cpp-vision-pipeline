@@ -67,3 +67,11 @@ vcpkg_installed/
 # test output & cache
 Testing/
 .cache/
+
+# Project files
+*.mp4
+*.avi
+*.mov
+
+results/
+__pycache__/
