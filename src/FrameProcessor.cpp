@@ -1,5 +1,9 @@
 #include "FrameProcessor.hpp"
+#if __has_include(<opencv2/geometry.hpp>)
 #include <opencv2/geometry.hpp>
+#else
+#include <opencv2/imgproc.hpp>
+#endif
 
 #include <vector>
 
