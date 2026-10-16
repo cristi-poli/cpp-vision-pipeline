@@ -1,4 +1,5 @@
 #include "FrameProcessor.hpp"
+#include <opencv2/geometry.hpp>
 
 #include <vector>
 
